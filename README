@@ -1,0 +1,8 @@
+This is the repository I use to synchronize data (e.g., dotfiles, passwords) accross multiple computers.
+
+I make no guarantees about anything in this repository. Use at your own risk.
+
+# Set Up
+
+Before doing anything else, run the git_config script from the root directory.
+This properly sets up the three remotes and local configuration.

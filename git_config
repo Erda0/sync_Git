@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# This script ensures the repository is correctly set up.
+
+# Run this from in the repository root.
+
+# First, start using the included git config. Right now, this just sets the username and email.
+git config --local include.path ../.gitconfig
