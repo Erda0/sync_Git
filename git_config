@@ -10,21 +10,66 @@
 
 set -eo pipefail
 
+printf "This will DESTRUCTIVELY configure repository so that it is in line with the remote repositories.\n"
+printf "Do not run this command if your changes have not been pushed.\n"
+printf "Note this command will not work if the remote repositories are out of sync.\n"
+printf "Do you wish to continue?\n"
+select result in Yes No; do
+    case $result in
+        Yes ) break;;
+        No ) exit 1;;
+    esac
+done
+
 # First, start using the included git config. Right now, this just sets the username and email.
 git config --local include.path ../.gitconfig
 
-# Next remove current remotes and install the chosen remotes.
-# TODO add flag to change remotes to SSH
-printf "Configuring remotes...\n"
-for rmt in $(git remote); do
-    git remote remove "$rmt"
-done
-git remote add bitbucket https://erda0@bitbucket.org/erda0/sync_git.git
-git remote add gitlab https://erda@gitlab.com/Erda/sync_git.git
-git remote add github https://erda0@github.com/Erda0/sync_git.git
-printf "    Done.\n"
+function http_remotes() {
+    printf "Configuring remotes...\n"
+    for rmt in $(git remote); do
+        git remote remove "$rmt"
+    done
+    git remote add bitbucket https://erda0@bitbucket.org/erda0/sync_git.git
+    git remote add gitlab https://erda@gitlab.com/Erda/sync_git.git
+    git remote add github https://erda0@github.com/Erda0/sync_git.git
+    git config --unset --local core.sshCommand || true
+    printf "    Done.\n"
+}
 
-printf "Verifying remotes...\n"
+function ssh_remotes() {
+    printf "Your public ssh key is:\n\n"
+    cat ./ssh_key.pub
+    printf "\nPlease make sure this is authorized with the remote hosts before proceding.\n"
+    read -p "Press ENTER to continue."
+
+    printf "Configuring remotes...\n"
+    for rmt in $(git remote); do
+        git remote remove "$rmt"
+    done
+    git remote add bitbucket git@bitbucket.org:erda0/sync_git.git
+    git remote add gitlab git@gitlab.com:Erda/sync_git.git
+    git remote add github git@github.com:Erda0/sync_git.git
+    git config --local core.sshCommand "ssh -i \"$PWD/ssh_key\""
+    printf "    Done.\n"
+}
+
+if ! [[ -e ./ssh_key && -e ./ssh_key.pub ]]; then
+    printf "No ssh key detected, do you want to set one up?\n"
+    select result in Yes No; do
+        case $result in
+            No ) http_remotes; break;;
+            Yes ) rm -f ./ssh_key ./ssh_key.pub
+                  ssh-keygen -t rsa -b 4096 -f ./ssh_key -C "sync_git key"
+                  printf "SSH keys generated!\n"
+                  ssh_remotes
+                  break;;
+        esac
+    done
+else
+    ssh_remotes
+fi
+
+printf "Verifying remotes are synchronized...\n"
 total=""
 for rmt in $(git remote); do
     output=`git ls-remote --exit-code "$rmt" refs/heads/master`
@@ -38,4 +83,5 @@ else
     exit 1
 fi
 
-
+printf "Synchronizing...\n"
+printf "    Done.\n"
