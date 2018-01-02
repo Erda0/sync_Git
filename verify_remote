@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# This script verifies that all remotes are on the same commit.
+
+set -eo pipefail
+
+printf "Verifying remotes are synchronized...\n"
+total=""
+for rmt in $(git remote); do
+    output=`git ls-remote --exit-code "$rmt" refs/heads/master`
+    total="$total$output\n"
+done
+uniqcount=`printf "$total" | uniq -c | wc -l`
+if [ "$uniqcount" -eq 1 ]; then
+    printf "    Done.\n"
+    exit 0
+else
+    printf "    ERROR: Remotes are divergent. Please resolve this and then try again!\n"
+    exit 1
+fi

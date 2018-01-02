@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# This script pushes to all of the remotes. 
+
+set -eo pipefail
+
+printf "Pusing to remotes...\n"
+for rmt in $(git remote); do
+    git push "$rmt" "$@"
+done
+printf "    Done.\n"
+
+./verify_remote

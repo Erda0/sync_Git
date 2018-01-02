@@ -69,19 +69,7 @@ else
     ssh_remotes
 fi
 
-printf "Verifying remotes are synchronized...\n"
-total=""
-for rmt in $(git remote); do
-    output=`git ls-remote --exit-code "$rmt" refs/heads/master`
-    total="$total$output\n"
-done
-uniqcount=`printf "$total" | uniq -c | wc -l`
-if [ "$uniqcount" -eq 1 ]; then
-    printf "    Done.\n"
-else
-    printf "    ERROR: Remotes are divergent. Please resolve this and then try again!\n"
-    exit 1
-fi
+./verify_remote
 
 printf "Synchronizing...\n"
 printf "    Done.\n"
