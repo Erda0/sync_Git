@@ -6,3 +6,11 @@
 
 # First, start using the included git config. Right now, this just sets the username and email.
 git config --local include.path ../.gitconfig
+
+# Next remove current remotes and install the chosen remotes.
+# TODO add flag to change remotes to SSH
+git remote | xargs -L1 git remote remove
+git remote add bitbucket https://erda0@bitbucket.org/erda0/sync_git.git
+git remote add gitlab https://gitlab.com/Erda/sync_git.git
+git remote add github https://github.com/Erda0/sync_git.git
+
