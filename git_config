@@ -11,6 +11,6 @@ git config --local include.path ../.gitconfig
 # TODO add flag to change remotes to SSH
 git remote | xargs -L1 git remote remove
 git remote add bitbucket https://erda0@bitbucket.org/erda0/sync_git.git
-git remote add gitlab https://gitlab.com/Erda/sync_git.git
-git remote add github https://github.com/Erda0/sync_git.git
+git remote add gitlab https://erda@gitlab.com/Erda/sync_git.git
+git remote add github https://erda0@github.com/Erda0/sync_git.git
 
