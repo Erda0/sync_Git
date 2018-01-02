@@ -4,13 +4,38 @@
 
 # Run this from in the repository root.
 
+# Requires: git (built with version 2.15.1. Ymmv with other versions)
+#           uniq
+#           wc
+
+set -eo pipefail
+
 # First, start using the included git config. Right now, this just sets the username and email.
 git config --local include.path ../.gitconfig
 
 # Next remove current remotes and install the chosen remotes.
 # TODO add flag to change remotes to SSH
-git remote | xargs -L1 git remote remove
+printf "Configuring remotes...\n"
+for rmt in $(git remote); do
+    git remote remove "$rmt"
+done
 git remote add bitbucket https://erda0@bitbucket.org/erda0/sync_git.git
 git remote add gitlab https://erda@gitlab.com/Erda/sync_git.git
 git remote add github https://erda0@github.com/Erda0/sync_git.git
+printf "    Done.\n"
+
+printf "Verifying remotes...\n"
+total=""
+for rmt in $(git remote); do
+    output=`git ls-remote --exit-code "$rmt" refs/heads/master`
+    total="$total$output\n"
+done
+uniqcount=`printf "$total" | uniq -c | wc -l`
+if [ "$uniqcount" -eq 1 ]; then
+    printf "    Done.\n"
+else
+    printf "    ERROR: Remotes are divergent. Please resolve this and then try again!\n"
+    exit 1
+fi
+
 
