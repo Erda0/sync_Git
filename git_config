@@ -10,17 +10,6 @@
 
 set -eo pipefail
 
-printf "This will DESTRUCTIVELY configure repository so that it is in line with the remote repositories.\n"
-printf "Do not run this command if your changes have not been pushed.\n"
-printf "Note this command will not work if the remote repositories are out of sync.\n"
-printf "Do you wish to continue?\n"
-select result in Yes No; do
-    case $result in
-        Yes ) break;;
-        No ) exit 1;;
-    esac
-done
-
 # First, start using the included git config. Right now, this just sets the username and email.
 git config --local include.path ../.gitconfig
 
@@ -71,5 +60,12 @@ fi
 
 ./verify_remote
 
+branch=`git rev-parse --abbrev-ref HEAD`
 printf "Synchronizing...\n"
+for rmt in $(git remote); do
+    git pull "$rmt" "$branch"
+    break
+done
 printf "    Done.\n"
+
+printf "You should be good to go!\n"
