@@ -10,4 +10,4 @@ for rmt in $(git remote); do
 done
 printf "    Done.\n"
 
-./verify_remote
+./verify_remotes

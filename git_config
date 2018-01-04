@@ -4,10 +4,6 @@
 
 # Run this from in the repository root.
 
-# Requires: git (built with version 2.15.1. Ymmv with other versions)
-#           uniq
-#           wc
-
 set -eo pipefail
 
 # First, start using the included git config. Right now, this just sets the username and email.
