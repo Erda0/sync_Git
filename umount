@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -eo pipefail
+
+printf "Unmounting encrypted data...\n"
+mounted=$(veracrypt -t -l ./encrypted 2>/dev/null || true)
+if ! [ -z "$mounted" ]; then
+    veracrypt -t -d ./encrypted
+fi
+printf "    Done.\n"
+

@@ -60,6 +60,8 @@ fi
 
 ./verify_remote
 
+./umount
+
 branch=`git rev-parse --abbrev-ref HEAD`
 printf "Synchronizing...\n"
 for rmt in $(git remote); do
@@ -67,5 +69,7 @@ for rmt in $(git remote); do
     break
 done
 printf "    Done.\n"
+
+./mount
 
 printf "You should be good to go!\n"
