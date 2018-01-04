@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# This script synchronizes with the remotes via git pull <remote> "$@".
+# 
+# This script first ensures the remtoes are synchronized, then unmounts the internal disk, invokes the pull command on an arbitrary remote, and then remounts the disk.
+# 
+# As of right now, we always pull from the first remote.
+
+set -eo pipefail
+
+./verify_remote
+
+./umount
+
+printf "Pulling from remotes...\n"
+for rmt in $(git remote); do
+    git pull "$rmt" "$@"
+    break
+done
+printf "    Done.\n"
+
+./mount

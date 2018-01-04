@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This script pushes to all of the remotes. 
+# This script pushes to all of the remotes via git push "$@".
 
 set -eo pipefail
 

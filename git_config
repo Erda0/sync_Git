@@ -58,18 +58,7 @@ else
     ssh_remotes
 fi
 
-./verify_remote
-
-./umount
-
 branch=`git rev-parse --abbrev-ref HEAD`
-printf "Synchronizing...\n"
-for rmt in $(git remote); do
-    git pull "$rmt" "$branch"
-    break
-done
-printf "    Done.\n"
-
-./mount
+./pull_remotes "$branch"
 
 printf "You should be good to go!\n"
