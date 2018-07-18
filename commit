@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -eo pipefail
+
+./umount
+
+git add -u
+
+git commit -s
+
+./mount
